@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseUUIDPipe,
   Post,
@@ -17,12 +18,12 @@ export class UserController {
 
   @Get()
   findAll() {
-    return this.userService.findAll();
+    return this.userService.findAll(); // This now returns the user data without passwords
   }
 
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.userService.findOne(id);
+    return this.userService.findOne(id); // This now returns user data without passwords
   }
 
   @Post()
@@ -31,15 +32,13 @@ export class UserController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Body() userUpdate: UpdatePasswordDto,
-  ) {
+  update(@Param('id') id: string, @Body() userUpdate: UpdatePasswordDto) {
     return this.userService.update(id, userUpdate);
   }
 
   @Delete(':id')
+  @HttpCode(204)
   delete(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.userService.delete(id);
+    this.userService.delete(id);
   }
 }

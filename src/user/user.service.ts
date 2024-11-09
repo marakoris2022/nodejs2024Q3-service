@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,7 +13,7 @@ export class UserService {
   private user: UserDto[] = [];
 
   findAll() {
-    return this.user;
+    return this.user.map(({ password, ...user }) => user);
   }
 
   findOne(id: string) {
@@ -20,7 +21,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return user;
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   create(user: CreateUserDto) {
@@ -35,27 +37,44 @@ export class UserService {
 
     this.user.push(newUser);
 
-    return newUser;
+    const { password, ...resUser } = newUser;
+
+    return resUser;
   }
 
   update(id: string, updatedUser: UpdatePasswordDto) {
-    const user = this.findOne(id);
+    const user = this.user.find((user) => user.id === id);
+
+    if (!this.isValidUuid(id)) {
+      throw new BadRequestException('Invalid user ID');
+    }
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
     if (user.password !== updatedUser.oldPassword) {
-      throw new BadRequestException('Old password is incorrect');
+      throw new ForbiddenException('Old password is incorrect');
     }
 
     user.password = updatedUser.newPassword;
     user.updatedAt = Date.now();
     user.version += 1;
 
-    return user;
+    const { password, ...resUser } = user;
+
+    return resUser;
   }
 
   delete(id: string) {
     const user = this.findOne(id);
 
     this.user = this.user.filter((user) => user.id !== id);
+  }
 
-    return user;
+  private isValidUuid(id: string): boolean {
+    const uuidRegex =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    return uuidRegex.test(id);
   }
 }
