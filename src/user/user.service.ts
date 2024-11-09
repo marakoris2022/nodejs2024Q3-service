@@ -67,7 +67,7 @@ export class UserService {
   }
 
   delete(id: string) {
-    const user = this.findOne(id);
+    this.findOne(id);
 
     this.user = this.user.filter((user) => user.id !== id);
   }

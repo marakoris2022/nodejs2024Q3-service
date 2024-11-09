@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Param,
-  Body,
-  HttpCode,
-} from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, HttpCode } from '@nestjs/common';
 import { FavoritesService } from './favs.service';
-import { Track, Album, Artist } from './favorites.dto';
 
 @Controller('favs')
 export class FavoritesController {
