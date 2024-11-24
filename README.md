@@ -1,72 +1,46 @@
-# Home Library Service
+# Prerequisites / Docker
 
-## Prerequisites
+Docker - Download & Install Docker.
+Docker Compose - (обычно устанавливается вместе с Docker Desktop).
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+## Running application (with Docker)
 
-## Downloading
-
-```
-git clone {repository URL}
-```
-
-## Installing NPM modules
+1. Сборка и запуск контейнеров
+   Убедитесь, что Docker установлен и работает. Затем выполните команды:
 
 ```
-npm install
+docker-compose up --build
 ```
 
-## Running application
+2. Доступ к приложению
+   После запуска контейнеров, приложение будет доступно по адресу:
+
+API: http://localhost:4000
+Swagger: http://localhost:4000/doc
+
+3. Остановка контейнеров
+   Для остановки контейнеров выполните:
 
 ```
-npm start
+docker-compose down
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## Testing (with Docker)
 
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
+Для запуска тестов в Docker-контейнере (без авторизации):
 
 ```
-npm run test
+docker exec -it <container_id> npm run test
 ```
 
-To run only one of all test suites
+Example:
 
 ```
-npm run test -- <path to suite>
+docker exec -it f6bb8a47e6c80939250e4bf4f0768ca91750e20e7b20c5c8250bab9b5e42e8de npm run test
 ```
 
-To run all test with authorization
+Для тестов с авторизацией:
 
 ```
-npm run test:auth
+docker exec -it <container_id> npm run test:auth
 ```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
