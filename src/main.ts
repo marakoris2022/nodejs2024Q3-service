@@ -19,6 +19,8 @@ async function bootstrap() {
   }
 
   await app.listen(PORT);
+  console.log('version: 1');
+
   console.log('Server is running on http://localhost:4000');
   console.log('Swagger UI available at http://localhost:4000/doc');
 }

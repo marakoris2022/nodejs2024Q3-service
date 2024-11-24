@@ -4,8 +4,16 @@ import { User } from './user/user.entity';
 import { Artist } from './artist/artist.entity';
 import { Track } from './track/track.entity';
 import { AlbumEntity } from './album/album.entity';
-
-console.log('process.env.DATABASE_URL', process.env.DATABASE_URL);
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UserController } from './user/user.controller';
+import { ArtistController } from './artist/artist.controller';
+import { TrackController } from './track/track.controller';
+import { AlbumController } from './album/album.controller';
+import { ArtistService } from './artist/artist.service';
+import { UserService } from './user/user.service';
+import { TrackService } from './track/track.service';
+import { AlbumService } from './album/album.service';
 
 @Module({
   imports: [
@@ -16,10 +24,24 @@ console.log('process.env.DATABASE_URL', process.env.DATABASE_URL);
       username: 'postgres',
       password: 'postgres',
       database: 'nodejs2024q3',
-      entities: [User],
+      entities: [User, Artist, Track, AlbumEntity],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Artist, Track, AlbumEntity]),
+  ],
+  controllers: [
+    AppController,
+    UserController,
+    ArtistController,
+    TrackController,
+    AlbumController,
+  ],
+  providers: [
+    AppService,
+    ArtistService,
+    UserService,
+    TrackService,
+    AlbumService,
   ],
 })
 export class AppModule {}
