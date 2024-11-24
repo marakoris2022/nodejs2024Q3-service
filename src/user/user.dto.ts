@@ -1,4 +1,12 @@
-import { IsUUID, IsInt, Min, IsNumber, IsString } from 'class-validator';
+import {
+  IsUUID,
+  IsInt,
+  Min,
+  IsNumber,
+  IsString,
+  Matches,
+  IsOptional,
+} from 'class-validator';
 
 export class UserResponseDto {
   @IsUUID('4', { message: 'Invalid userId format. It must be a UUID v4.' })

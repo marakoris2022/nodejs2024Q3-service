@@ -4,7 +4,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto, UserDto } from './user.dto';
 
@@ -30,7 +29,8 @@ export class UserService {
     const newUser = {
       id: newId,
       version: 1,
-      ...user,
+      login: user.login,
+      password: user.password,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -38,7 +38,6 @@ export class UserService {
     this.user.push(newUser);
 
     const { password, ...resUser } = newUser;
-
     return resUser;
   }
 
@@ -58,16 +57,15 @@ export class UserService {
     }
 
     user.password = updatedUser.newPassword;
-    user.updatedAt = Date.now();
+    user.updatedAt = Date.now(); // Timestamp обновления
     user.version += 1;
 
     const { password, ...resUser } = user;
-
     return resUser;
   }
 
   delete(id: string) {
-    this.findOne(id);
+    this.findOne(id); // Проверка на существование
 
     this.user = this.user.filter((user) => user.id !== id);
   }

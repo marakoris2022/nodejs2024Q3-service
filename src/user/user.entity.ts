@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
+@Entity('users') // Рекомендуется указывать имя таблицы
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -11,12 +11,12 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ type: 'int' })
   version: number;
 
-  @Column()
-  createdAt: number;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
 
-  @Column()
-  updatedAt: number;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
 }

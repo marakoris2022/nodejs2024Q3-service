@@ -1,54 +1,41 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
-import { CreateTrackDto, UpdateTrackDto, TrackDto } from './track.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Track } from './track.entity';
+import { CreateTrackDto, UpdateTrackDto } from './track.dto';
 
 @Injectable()
 export class TrackService {
-  private tracks: TrackDto[] = [];
+  constructor(
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+  ) {}
 
   findAll() {
-    return this.tracks;
+    return this.trackRepository.find();
   }
 
-  findOne(id: string) {
-    const track = this.tracks.find((track) => track.id === id);
+  async findOne(id: string) {
+    const track = await this.trackRepository.findOne({ where: { id } });
     if (!track) {
       throw new NotFoundException(`Track with ID ${id} not found`);
     }
     return track;
   }
 
-  create(track: CreateTrackDto) {
-    const newId = uuidv4();
-    const newTrack = {
-      id: newId,
-      ...track,
-    };
-
-    this.tracks.push(newTrack);
-
-    return newTrack;
+  create(createTrackDto: CreateTrackDto) {
+    const track = this.trackRepository.create(createTrackDto);
+    return this.trackRepository.save(track);
   }
 
-  update(id: string, updatedTrack: UpdateTrackDto) {
-    this.tracks = this.tracks.map((track) => {
-      if (track.id === id) {
-        return {
-          ...track,
-          ...updatedTrack,
-        };
-      }
-      return track;
-    });
-
-    return this.findOne(id);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const track = await this.findOne(id);
+    const updatedTrack = Object.assign(track, updateTrackDto);
+    return this.trackRepository.save(updatedTrack);
   }
 
-  delete(id: string) {
-    const removedTrack = this.findOne(id);
-
-    this.tracks = this.tracks.filter((track) => track.id !== id);
-
-    return removedTrack;
+  async delete(id: string) {
+    const track = await this.findOne(id);
+    return this.trackRepository.remove(track);
   }
 }

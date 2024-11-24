@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
-import { Artist } from './artist.dto';
+import { Artist } from './artist.entity'; // Импортируем сущность
 
 @Controller('artist')
 export class ArtistController {

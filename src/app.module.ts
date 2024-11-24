@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
+import { Artist } from './artist/artist.entity';
+import { Track } from './track/track.entity';
+import { AlbumEntity } from './album/album.entity';
 
 console.log('process.env.DATABASE_URL', process.env.DATABASE_URL);
 
@@ -16,7 +19,7 @@ console.log('process.env.DATABASE_URL', process.env.DATABASE_URL);
       entities: [User],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Artist, Track, AlbumEntity]),
   ],
 })
 export class AppModule {}
