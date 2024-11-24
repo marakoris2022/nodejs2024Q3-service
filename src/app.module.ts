@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { TrackModule } from './track/track.module';
-import { ArtistModule } from './artist/artist.module';
-import { AlbumModule } from './album/album.module';
-import { FavsModule } from './favs/favs.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/user.entity';
+
+console.log('process.env.DATABASE_URL', process.env.DATABASE_URL);
 
 @Module({
-  imports: [UserModule, TrackModule, ArtistModule, AlbumModule, FavsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'postgres_container',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'nodejs2024q3',
+      entities: [User],
+      synchronize: true,
+    }),
+    TypeOrmModule.forFeature([User]),
+  ],
 })
 export class AppModule {}

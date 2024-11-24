@@ -35,7 +35,7 @@ export class UpdatePasswordDto {
 }
 
 export class UserDto {
-  @IsUUID('4', { message: 'Invalid userId format. It must be a UUID v4.' })
+  @IsUUID('4')
   id: string;
 
   @IsString()
@@ -45,12 +45,12 @@ export class UserDto {
   password: string;
 
   @IsInt()
-  @Min(1, { message: 'Version must be at least 1.' })
+  @Min(1)
   version: number;
 
-  @IsNumber()
-  createdAt: number; // Timestamp of creation
+  @IsInt()
+  createdAt: number;
 
-  @IsNumber()
-  updatedAt: number; // Timestamp of last update
+  @IsInt()
+  updatedAt: number;
 }

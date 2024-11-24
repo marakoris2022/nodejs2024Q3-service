@@ -1,13 +1,16 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres_container:
+    image: postgres:14
     build:
       context: .
       dockerfile: Dockerfile.postgres
     container_name: postgres_container
     ports:
       - '5432:5432'
+    networks:
+      - homelib-network
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -16,21 +19,27 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
-  app:
+  nodejs_app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: nodejs_app
     ports:
-      - '3000:3000'
+      - '4000:4000'
+    networks:
+      - homelib-network
     restart: always
     depends_on:
-      - postgres
-    environment:
-      DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/nodejs2024q3'
+      - postgres_container
     volumes:
       - .:/app
       - /app/node_modules
+    environment:
+      DATABASE_URL: 'postgres://postgres:postgres@postgres_container:5432/nodejs2024q3'
 
 volumes:
   pg_data:
+
+networks:
+  homelib-network:
+    driver: bridge

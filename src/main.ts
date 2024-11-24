@@ -11,9 +11,12 @@ async function bootstrap() {
 
   const PORT = process.env.PORT || 4000;
 
-  const swaggerDocument = YAML.load(join(__dirname, '../doc/api.yaml'));
-
-  app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  try {
+    const swaggerDocument = YAML.load(join(__dirname, '../doc/api.yaml'));
+    app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  } catch (error) {
+    console.error('Error loading Swagger document:', error);
+  }
 
   await app.listen(PORT);
   console.log('Server is running on http://localhost:4000');
