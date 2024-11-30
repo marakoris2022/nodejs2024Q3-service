@@ -40,6 +40,9 @@ export class UpdatePasswordDto {
 
   @IsString()
   newPassword: string;
+
+  @IsString()
+  password: string; // Add this line if you actually need a "password" field
 }
 
 export class UserDto {

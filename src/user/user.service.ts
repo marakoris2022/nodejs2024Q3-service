@@ -1,78 +1,80 @@
 import {
-  BadRequestException,
-  ForbiddenException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto, UpdatePasswordDto, UserDto } from './user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
+import { CreateUserDto, UpdatePasswordDto } from './user.dto';
 
 @Injectable()
 export class UserService {
-  private user: UserDto[] = [];
-
-  findAll() {
-    return this.user.map(({ password, ...user }) => user);
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
+  async findById(id: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
-  findOne(id: string) {
-    const user = this.user.find((user) => user.id === id);
+  async createUser(login: string, hashedPassword: string, version = 1) {
+    const user = this.userRepository.create({
+      login,
+      password: hashedPassword,
+      version,
+    });
+
+    return await this.userRepository.save(user);
+  }
+
+  async create(user: CreateUserDto) {
+    const existingUser = await this.userRepository.findOne({
+      where: { login: user.login },
+    });
+    if (existingUser) {
+      throw new ConflictException('User with this login already exists');
+    }
+    const newUser = this.userRepository.create(user);
+    return await this.userRepository.save(newUser);
+  }
+
+  // Получить всех пользователей
+  async findAll() {
+    return this.userRepository.find();
+  }
+
+  // Получить пользователя по ID
+  async findOne(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException('User not found');
     }
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return user;
   }
 
-  create(user: CreateUserDto) {
-    const newId = uuidv4();
-    const newUser = {
-      id: newId,
-      version: 1,
-      login: user.login,
-      password: user.password,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-
-    this.user.push(newUser);
-
-    const { password, ...resUser } = newUser;
-    return resUser;
-  }
-
-  update(id: string, updatedUser: UpdatePasswordDto) {
-    const user = this.user.find((user) => user.id === id);
-
-    if (!this.isValidUuid(id)) {
-      throw new BadRequestException('Invalid user ID');
-    }
-
+  // Обновить информацию о пользователе
+  async update(id: string, userUpdate: UpdatePasswordDto) {
+    const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException('User not found');
     }
 
-    if (user.password !== updatedUser.oldPassword) {
-      throw new ForbiddenException('Old password is incorrect');
-    }
-
-    user.password = updatedUser.newPassword;
-    user.updatedAt = Date.now(); // Timestamp обновления
+    user.password = userUpdate.password; // если только пароль
     user.version += 1;
-
-    const { password, ...resUser } = user;
-    return resUser;
+    return await this.userRepository.save(user);
   }
 
-  delete(id: string) {
-    this.findOne(id); // Проверка на существование
-
-    this.user = this.user.filter((user) => user.id !== id);
+  // Удалить пользователя
+  async delete(id: string) {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return await this.userRepository.remove(user);
   }
 
-  private isValidUuid(id: string): boolean {
-    const uuidRegex =
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-    return uuidRegex.test(id);
+  // Для поиска пользователя по логину
+  async findByLogin(login: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { login } });
   }
 }

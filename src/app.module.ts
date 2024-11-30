@@ -14,6 +14,8 @@ import { ArtistService } from './artist/artist.service';
 import { UserService } from './user/user.service';
 import { TrackService } from './track/track.service';
 import { AlbumService } from './album/album.service';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -28,6 +30,10 @@ import { AlbumService } from './album/album.service';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Artist, Track, AlbumEntity]),
+    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [
     AppController,
