@@ -19,7 +19,7 @@ export class Artist {
   grammy: boolean;
 
   constructor(name: string, grammy = false) {
-    this.id = uuidv4(); // id генерируется автоматически
+    this.id = uuidv4();
     this.name = name;
     this.grammy = grammy;
   }

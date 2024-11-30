@@ -20,10 +20,10 @@ export class UserResponseDto {
   version: number;
 
   @IsNumber()
-  createdAt: number; // Timestamp of creation
+  createdAt: number;
 
   @IsNumber()
-  updatedAt: number; // Timestamp of last update
+  updatedAt: number;
 }
 
 export class CreateUserDto {
@@ -42,7 +42,7 @@ export class UpdatePasswordDto {
   newPassword: string;
 
   @IsString()
-  password: string; // Add this line if you actually need a "password" field
+  password: string;
 }
 
 export class UserDto {

@@ -38,12 +38,10 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  // Получить всех пользователей
   async findAll() {
     return this.userRepository.find();
   }
 
-  // Получить пользователя по ID
   async findOne(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
@@ -52,19 +50,17 @@ export class UserService {
     return user;
   }
 
-  // Обновить информацию о пользователе
   async update(id: string, userUpdate: UpdatePasswordDto) {
     const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    user.password = userUpdate.password; // если только пароль
+    user.password = userUpdate.password;
     user.version += 1;
     return await this.userRepository.save(user);
   }
 
-  // Удалить пользователя
   async delete(id: string) {
     const user = await this.findOne(id);
     if (!user) {
@@ -73,7 +69,6 @@ export class UserService {
     return await this.userRepository.remove(user);
   }
 
-  // Для поиска пользователя по логину
   async findByLogin(login: string): Promise<User | null> {
     return await this.userRepository.findOne({ where: { login } });
   }

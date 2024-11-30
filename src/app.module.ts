@@ -27,8 +27,8 @@ import { ConfigModule } from '@nestjs/config';
       password: 'postgres',
       database: 'nodejs2024q3',
       entities: [User, Artist, Track, AlbumEntity],
-      synchronize: false, // Отключаем авто-синхронизацию
-      migrations: ['dist/migrations/*.js'], // Путь к миграциям
+      synchronize: false,
+      migrations: ['dist/migrations/*.js'],
     }),
     TypeOrmModule.forFeature([User, Artist, Track, AlbumEntity]),
     AuthModule,
