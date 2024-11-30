@@ -23,15 +23,13 @@ export class FavoritesService {
     if (!this.isValidUuid(trackId)) {
       throw new BadRequestException('Invalid track ID');
     }
-
-    // Assume there's a way to check if the track exists, e.g., a database call
-    const trackExists = true; // This should be replaced by actual check
+    const trackExists = true;
 
     if (!trackExists) {
       throw new NotFoundException('Track not found');
     }
 
-    const track = { id: trackId, name: 'Track Name' }; // Example track data
+    const track = { id: trackId, name: 'Track Name' };
     this.favoriteTracks.push(track);
 
     return { message: 'Track added to favorites', track };
@@ -59,14 +57,13 @@ export class FavoritesService {
       throw new BadRequestException('Invalid album ID');
     }
 
-    // Assume there's a way to check if the album exists, e.g., a database call
-    const albumExists = true; // This should be replaced by actual check
+    const albumExists = true;
 
     if (!albumExists) {
       throw new NotFoundException('Album not found');
     }
 
-    const album = { id: albumId, name: 'Album Name' }; // Example album data
+    const album = { id: albumId, name: 'Album Name' };
     this.favoriteAlbums.push(album);
 
     return { message: 'Album added to favorites', album };
@@ -94,14 +91,13 @@ export class FavoritesService {
       throw new BadRequestException('Invalid artist ID');
     }
 
-    // Assume there's a way to check if the artist exists, e.g., a database call
-    const artistExists = true; // This should be replaced by actual check
+    const artistExists = true;
 
     if (!artistExists) {
       throw new NotFoundException('Artist not found');
     }
 
-    const artist = { id: artistId, name: 'Artist Name' }; // Example artist data
+    const artist = { id: artistId, name: 'Artist Name' };
     this.favoriteArtists.push(artist);
 
     return { message: 'Artist added to favorites', artist };

@@ -17,28 +17,40 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll() {
-    return this.userService.findAll(); // This now returns the user data without passwords
+  async findAll() {
+    return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.userService.findOne(id); // This now returns user data without passwords
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.userService.findOne(id);
   }
 
   @Post()
-  create(@Body() user: CreateUserDto) {
-    return this.userService.create(user);
+  async create(@Body() user: CreateUserDto) {
+    try {
+      return await this.userService.create(user);
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() userUpdate: UpdatePasswordDto) {
-    return this.userService.update(id, userUpdate);
+  async update(@Param('id') id: string, @Body() userUpdate: UpdatePasswordDto) {
+    try {
+      return await this.userService.update(id, userUpdate);
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    this.userService.delete(id);
+  async delete(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    try {
+      await this.userService.delete(id);
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 }
